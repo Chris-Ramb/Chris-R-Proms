@@ -1,0 +1,518 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CAIT — Cumberland Ankle Instability Test (gauche + droite)</title>
+</head>
+<body>
+
+<main class="wrap">
+  <header class="hero">
+    <h1>CAIT</h1>
+    <p class="sub">Cumberland Ankle Instability Test — <strong>cheville gauche</strong> + <strong>cheville droite</strong></p>
+  </header>
+
+  <section class="note" aria-label="Consignes">
+    <p>
+      <strong>Consigne :</strong> en pensant à votre état <strong>avant le dernier traumatisme</strong>, choisissez pour chaque question la réponse qui décrit le mieux <strong>chacune</strong> de vos chevilles.
+      <br><span class="muted">Aucune donnée n’est envoyée ni enregistrée : le score est calculé localement dans votre navigateur.</span>
+    </p>
+  </section>
+
+  <section class="meta" aria-label="Identité (optionnel)">
+    <div class="field">
+      <label for="nom">Nom (optionnel)</label>
+      <input id="nom" inputmode="text" autocomplete="family-name" placeholder="Nom" />
+    </div>
+    <div class="field">
+      <label for="prenom">Prénom (optionnel)</label>
+      <input id="prenom" inputmode="text" autocomplete="given-name" placeholder="Prénom" />
+    </div>
+  </section>
+
+  <section id="form" class="form" aria-label="Questionnaire"></section>
+
+  <section class="actions" aria-label="Actions">
+    <button type="button" id="calc">Générer résultat</button>
+    <button type="button" id="copy" class="secondary" disabled>Copier mes scores</button>
+    <button type="button" id="reset" class="secondary">Réinitialiser</button>
+  </section>
+
+  <div id="msg" class="msg" aria-live="polite"></div>
+
+  <section id="results" class="results" style="display:none;" aria-label="Résultats">
+    <h2>Résultat</h2>
+
+    <div class="resGrid">
+      <div class="resCard">
+        <div class="resTitle">Cheville gauche</div>
+        <div class="resScore"><span id="scoreL">—</span> <span class="muted">/ 30</span></div>
+        <div class="barWrap" aria-label="Barre score gauche">
+          <div class="bar">
+            <div class="cut" title="Seuil 24"></div>
+            <div class="fill" id="fillL"></div>
+            <div class="knob" id="knobL" aria-hidden="true"></div>
+          </div>
+          <div class="barTicks">
+            <span>0</span><span class="mid">Seuil 24</span><span>30</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="resCard">
+        <div class="resTitle">Cheville droite</div>
+        <div class="resScore"><span id="scoreR">—</span> <span class="muted">/ 30</span></div>
+        <div class="barWrap" aria-label="Barre score droite">
+          <div class="bar">
+            <div class="cut" title="Seuil 24"></div>
+            <div class="fill" id="fillR"></div>
+            <div class="knob" id="knobR" aria-hidden="true"></div>
+          </div>
+          <div class="barTicks">
+            <span>0</span><span class="mid">Seuil 24</span><span>30</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final" id="finalLine" style="display:none;"></div>
+    <p class="note2">Merci de communiquer ces scores à votre praticien.</p>
+  </section>
+
+  <footer class="foot">
+    <p class="attrib">
+      <strong>Calcul :</strong> addition des points des 9 questions, séparément pour la cheville gauche et la cheville droite (0–30).
+    </p>
+  </footer>
+</main>
+
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --panel2:#fbfbfd;
+    --text:#111827;
+    --muted:#4b5563;
+    --border:rgba(17,24,39,.10);
+    --shadow: 0 10px 26px rgba(17,24,39,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1000px 600px at 15% -10%, rgba(59,130,246,.10) 0%, transparent 60%),
+      radial-gradient(900px 520px at 95% 10%, rgba(16,185,129,.10) 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:16px 12px 28px}
+  .hero{
+    padding:18px 14px;
+    border:1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align:center;
+  }
+  h1{margin:0;font-size:30px;letter-spacing:.3px}
+  .sub{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.35}
+
+  .note{
+    margin-top:12px;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.75);
+    box-shadow: var(--shadow);
+  }
+  .note p{margin:0;line-height:1.35}
+  .muted{color:var(--muted)}
+
+  .meta{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+  .field{background: linear-gradient(180deg, var(--panel), var(--panel2)); border:1px solid var(--border); border-radius: var(--radius); padding:12px; box-shadow: var(--shadow);}
+  label{display:block;font-size:13px;margin:0 0 6px;color:#374151;font-weight:700}
+  input{
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid rgba(17,24,39,.18);
+    background:#fff;
+    font-size:16px;
+  }
+
+  .form{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+
+  .item{
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    box-shadow: var(--shadow);
+    padding:14px;
+  }
+  .qtitle{font-weight:900;font-size:16px;margin:0 0 10px}
+
+  .sides{display:grid;grid-template-columns:1fr;gap:12px}
+  .side{
+    border:1px solid rgba(17,24,39,.08);
+    border-radius: 16px;
+    padding:12px;
+    background: rgba(255,255,255,.7);
+  }
+  .sideHead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .sideHead .name{font-weight:900}
+  .sideHead .small{font-size:12px;color:var(--muted)}
+
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:12px 12px;
+    border-radius:16px;
+    border:1px solid rgba(17,24,39,.12);
+    background:#fff;
+    cursor:pointer;
+    user-select:none;
+  }
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .bullet{
+    margin-top:2px;
+    width:18px;height:18px;border-radius:999px;
+    border:2px solid rgba(17,24,39,.28);
+    flex:0 0 18px;
+  }
+  .optTxt{font-size:15px;line-height:1.25}
+  .opt:has(input:checked){
+    border-color: rgba(17,24,39,.55);
+    box-shadow: 0 8px 20px rgba(17,24,39,.10);
+  }
+  .opt:has(input:checked) .bullet{
+    border-color:#111827;
+    background: radial-gradient(circle at 50% 50%, #111827 0 45%, transparent 46% 100%);
+  }
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  button{padding:12px 14px;border-radius:14px;border:0;cursor:pointer;background:#111827;color:#fff;font-weight:900;font-size:16px}
+  button.secondary{background:#e5e7eb;color:#111827}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .msg{margin-top:10px;font-size:14px}
+
+  .results{margin-top:14px;border:1px solid var(--border);border-radius: var(--radius);background: rgba(255,255,255,.78);box-shadow: var(--shadow);padding:14px}
+  .results h2{margin:0 0 10px;font-size:18px}
+  .resGrid{display:grid;grid-template-columns:1fr;gap:12px}
+  .resCard{border:1px solid rgba(17,24,39,.10);border-radius:16px;background:#fff;padding:12px}
+  .resTitle{font-weight:900}
+  .resScore{font-size:22px;font-weight:900;margin-top:4px}
+  .barWrap{margin-top:10px}
+  .bar{
+    position:relative;
+    height:14px;
+    border-radius:999px;
+    background: rgba(17,24,39,.10);
+    overflow:hidden;
+  }
+  .cut{
+    position:absolute;
+    top:0;bottom:0;
+    left: calc((24/30) * 100%);
+    width:3px;
+    background: rgba(17,24,39,.55);
+    transform: translateX(-1px);
+    z-index:3;
+  }
+  .fill{
+    position:absolute;top:0;bottom:0;left:0;
+    width:0%;
+    background: linear-gradient(90deg, rgba(239,68,68,.85), rgba(245,158,11,.85), rgba(34,197,94,.85));
+    z-index:1;
+  }
+  .knob{
+    position:absolute;
+    top:50%;
+    left:0%;
+    width:18px;height:18px;
+    border-radius:999px;
+    background:#111827;
+    border:3px solid #fff;
+    box-shadow: 0 10px 20px rgba(17,24,39,.18);
+    transform: translate(-50%,-50%);
+    z-index:4;
+  }
+  .barTicks{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+  .barTicks .mid{opacity:.95}
+
+  .final{margin-top:12px;background:#fff;border:1px dashed rgba(17,24,39,.28);border-radius:16px;padding:12px;font-weight:1000}
+  .note2{margin:10px 0 0;font-weight:900}
+
+  .foot{margin-top:14px;text-align:center}
+  .attrib{margin:0;color:var(--muted);font-size:12px;line-height:1.35}
+
+  @media (min-width: 760px){
+    .meta{grid-template-columns:1fr 1fr}
+    .sides{grid-template-columns:1fr 1fr}
+    .resGrid{grid-template-columns:1fr 1fr}
+    h1{font-size:34px}
+  }
+</style>
+
+<script>
+(function(){
+  // Questions + barème (d'après vos photos/tableau CAIT)
+  // Remplacement demandé : "Je ne me suis jamais tordu la cheville."
+  const QUESTIONS = [
+    {
+      q: "J'ai une douleur dans la cheville :",
+      opts: [
+        ["Jamais.", 5],
+        ["Pendant le sport.", 4],
+        ["En courant sur des surfaces irrégulières.", 3],
+        ["En courant sur des surfaces planes.", 2],
+        ["En marchant sur des surfaces irrégulières.", 1],
+        ["En marchant sur des surfaces planes.", 0],
+      ]
+    },
+    {
+      q: "Je sens ma cheville instable :",
+      opts: [
+        ["Jamais.", 4],
+        ["Parfois, pendant le sport (pas tout le temps).", 3],
+        ["Fréquemment pendant le sport (à chaque fois).", 2],
+        ["Parfois, pendant l'activité quotidienne.", 1],
+        ["Fréquemment pendant l'activité quotidienne.", 0],
+      ]
+    },
+    {
+      q: "Quand je fais des virages serrés, je sens que ma cheville est instable :",
+      opts: [
+        ["Jamais.", 3],
+        ["Parfois, lors de la course.", 2],
+        ["Souvent, lors de la course.", 1],
+        ["Lors de la marche.", 0],
+      ]
+    },
+    {
+      q: "En descendant les escaliers, je sens que ma cheville est instable :",
+      opts: [
+        ["Jamais.", 3],
+        ["Si je vais vite.", 2],
+        ["Parfois.", 1],
+        ["Toujours.", 0],
+      ]
+    },
+    {
+      q: "Quand je me tiens debout sur une jambe, je sens que ma cheville est instable :",
+      opts: [
+        ["Jamais.", 2],
+        ["Lorsque je suis sur la pointe de mon pied.", 1],
+        ["Lorsque j'ai le pied à plat sur le sol.", 0],
+      ]
+    },
+    {
+      q: "Je sens que ma cheville est instable lorsque :",
+      opts: [
+        ["Jamais.", 3],
+        ["Je saute de gauche à droite.", 2],
+        ["Je saute sur place.", 1],
+        ["Je saute (peu importe la direction).", 0],
+      ]
+    },
+    {
+      q: "Je sens que ma cheville est instable lorsque :",
+      opts: [
+        ["Jamais.", 4],
+        ["Je cours sur des surfaces irrégulières.", 3],
+        ["Je cours sur des surfaces planes.", 2],
+        ["Je marche sur des surfaces irrégulières.", 1],
+        ["Je marche sur des surfaces planes.", 0],
+      ]
+    },
+    {
+      q: "En général, quand ma cheville subit une torsion, je peux l'arrêter :",
+      opts: [
+        ["Immédiatement.", 3],
+        ["Souvent.", 2],
+        ["Parfois.", 1],
+        ["Jamais.", 0],
+        ["Je ne me suis jamais tordu la cheville.", 3],
+      ]
+    },
+    {
+      q: "Après un accident typique où ma cheville se tord, elle revient à la normale :",
+      opts: [
+        ["Presque immédiatement.", 3],
+        ["Moins de 1 jour.", 2],
+        ["1-2 jours.", 1],
+        ["Plus de 2 jours.", 0],
+        ["Je ne me suis jamais tordu la cheville.", 3],
+      ]
+    }
+  ];
+
+  const form = document.getElementById("form");
+
+  function makeOptions(sideKey, idx, opts){
+    const wrap = document.createElement("div");
+    wrap.className = "opts";
+    const name = `${sideKey}_${idx}`;
+
+    opts.forEach(([label, pts], j)=>{
+      const id = `${name}_${j}`;
+      const lab = document.createElement("label");
+      lab.className = "opt";
+      lab.setAttribute("for", id);
+      lab.innerHTML = `
+        <input id="${id}" type="radio" name="${name}" value="${pts}">
+        <span class="bullet" aria-hidden="true"></span>
+        <span class="optTxt">${label}</span>
+      `;
+      wrap.appendChild(lab);
+    });
+
+    return wrap;
+  }
+
+  QUESTIONS.forEach((Q, idx)=>{
+    const block = document.createElement("section");
+    block.className = "item";
+    block.innerHTML = `<div class="qtitle">${idx+1}. ${Q.q}</div>`;
+
+    const sides = document.createElement("div");
+    sides.className = "sides";
+
+    const left = document.createElement("div");
+    left.className = "side";
+    left.innerHTML = `<div class="sideHead"><div class="name">Cheville gauche</div><div class="small">Sélectionnez 1 réponse</div></div>`;
+    left.appendChild(makeOptions("L", idx, Q.opts));
+
+    const right = document.createElement("div");
+    right.className = "side";
+    right.innerHTML = `<div class="sideHead"><div class="name">Cheville droite</div><div class="small">Sélectionnez 1 réponse</div></div>`;
+    right.appendChild(makeOptions("R", idx, Q.opts));
+
+    sides.appendChild(left);
+    sides.appendChild(right);
+    block.appendChild(sides);
+
+    form.appendChild(block);
+  });
+
+  function getValue(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? parseInt(el.value,10) : null;
+  }
+
+  function compute(prefix){
+    let sum = 0;
+    let missing = 0;
+    for(let i=0;i<QUESTIONS.length;i++){
+      const v = getValue(`${prefix}_${i}`);
+      if(v === null){ missing++; continue; }
+      sum += v;
+    }
+    return {sum, missing};
+  }
+
+  const msg = document.getElementById("msg");
+  const results = document.getElementById("results");
+  const copyBtn = document.getElementById("copy");
+  const finalLine = document.getElementById("finalLine");
+
+  const scoreL = document.getElementById("scoreL");
+  const scoreR = document.getElementById("scoreR");
+  const fillL = document.getElementById("fillL");
+  const fillR = document.getElementById("fillR");
+  const knobL = document.getElementById("knobL");
+  const knobR = document.getElementById("knobR");
+
+  let lastSummary = "";
+
+  function setBar(sum, fillEl, knobEl){
+    const pct = Math.max(0, Math.min(100, (sum/30)*100));
+    fillEl.style.width = pct + "%";
+    knobEl.style.left = pct + "%";
+  }
+
+  async function copyText(text){
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    }catch(e){}
+    try{
+      window.prompt("Copiez ce texte :", text);
+      return true;
+    }catch(e){}
+    return false;
+  }
+
+  document.getElementById("calc").addEventListener("click", ()=>{
+    msg.textContent = "";
+    copyBtn.disabled = true;
+    finalLine.style.display = "none";
+    finalLine.textContent = "";
+    lastSummary = "";
+
+    const L = compute("L");
+    const R = compute("R");
+
+    results.style.display = "block";
+
+    if(L.missing>0 || R.missing>0){
+      msg.textContent = `Réponses manquantes : gauche ${L.missing} / droite ${R.missing}. Merci de compléter toutes les questions.`;
+      scoreL.textContent = "—";
+      scoreR.textContent = "—";
+      fillL.style.width = "0%"; fillR.style.width = "0%";
+      knobL.style.left = "0%"; knobR.style.left = "0%";
+      return;
+    }
+
+    scoreL.textContent = String(L.sum);
+    scoreR.textContent = String(R.sum);
+    setBar(L.sum, fillL, knobL);
+    setBar(R.sum, fillR, knobR);
+
+    const nom = document.getElementById("nom").value.trim();
+    const prenom = document.getElementById("prenom").value.trim();
+    const who = (nom || prenom) ? ` — ${prenom} ${nom}`.trim() : "";
+
+    lastSummary = `CAIT${who} — gauche ${L.sum}/30 ; droite ${R.sum}/30`;
+    finalLine.textContent = lastSummary;
+    finalLine.style.display = "block";
+    copyBtn.disabled = false;
+  });
+
+  copyBtn.addEventListener("click", async ()=>{
+    if(!lastSummary) return;
+    const ok = await copyText(lastSummary);
+    msg.textContent = ok ? "Scores copiés." : "Impossible de copier automatiquement.";
+  });
+
+  document.getElementById("reset").addEventListener("click", ()=>{
+    for(let i=0;i<QUESTIONS.length;i++){
+      const Lc = document.querySelector(`input[name="L_${i}"]:checked`);
+      const Rc = document.querySelector(`input[name="R_${i}"]:checked`);
+      if(Lc) Lc.checked = false;
+      if(Rc) Rc.checked = false;
+    }
+    document.getElementById("nom").value="";
+    document.getElementById("prenom").value="";
+    msg.textContent="";
+    results.style.display="none";
+    copyBtn.disabled = true;
+    finalLine.style.display = "none";
+    finalLine.textContent = "";
+    lastSummary = "";
+    fillL.style.width = "0%"; fillR.style.width = "0%";
+    knobL.style.left = "0%"; knobR.style.left = "0%";
+    scoreL.textContent = "—"; scoreR.textContent = "—";
+  });
+})();
+</script>
+
+</body>
+</html>
