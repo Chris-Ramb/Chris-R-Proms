@@ -3,112 +3,279 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ACL RSI — Score reprise du sport LCA (calcul local)</title>
+  <title>ACL-RSI — Reprise du sport (calcul local)</title>
+  <meta name="description" content="ACL-RSI : questionnaire de reprise du sport après LCA. Calcul local du score, aucune donnée envoyée." />
 </head>
 <body>
+<main class="page">
+  <header class="hero">
+    <h1>ACL-RSI</h1>
+    <p class="sub">Retour au sport après LCA — calcul local (aucune donnée envoyée)</p>
+  </header>
 
-<div class="wrap">
-  <h2>ACL RSI (Anterior Cruciate Ligament – Return to Sport and Injury)</h2>
+  <section class="note" aria-label="Consignes">
+    <p>
+      <strong>Consigne :</strong> pensez au sport principal que vous pratiquiez avant l’accident.
+      Pour chaque item, choisissez une valeur <strong>de 0 à 10</strong> entre les deux extrêmes.
+    </p>
+  </section>
 
-  <p class="note">
-    <strong>Instructions :</strong><br>
-    Merci de répondre aux questions suivantes concernant le sport principal que vous pratiquiez avant l’accident.<br>
-    Pour chaque question, cochez la case entre les deux extrêmes selon ce qui vous parait correspondre le mieux à la situation actuelle de votre genou.
-  </p>
-
-  <div class="meta">
-    <div class="field">
-      <label for="knee">Genou concerné (optionnel)</label>
-      <select id="knee">
-        <option value="">—</option>
-        <option value="droit">Droit</option>
-        <option value="gauche">Gauche</option>
-      </select>
+  <section class="topbar" aria-label="Progression">
+    <div class="progressRow">
+      <div class="progressText"><span id="pos">1</span>/<span id="total">12</span></div>
+      <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
     </div>
-    <div class="field">
-      <label for="sport">Sport principal (optionnel)</label>
-      <input id="sport" placeholder="Ex : football, course, tennis…" />
+  </section>
+
+  <section class="card" aria-label="Question en cours">
+    <div class="qRow">
+      <div class="q" id="qText"></div>
     </div>
-  </div>
 
-  <div id="form" class="form"></div>
+    <div class="scaleWrap" aria-label="Échelle de 0 à 10">
+      <div class="scale" id="scale"></div>
 
-  <div class="actions">
-    <button type="button" id="calc">Afficher mon score</button>
-    <button type="button" id="copy" class="secondary" disabled>Copier mon score</button>
-    <button type="button" id="reset" class="secondary">Réinitialiser</button>
-  </div>
+      <!-- Ancres alignées sous 0 et 10 -->
+      <div class="anchorRow" id="anchorRow" aria-hidden="false">
+        <span class="pin pin0" aria-hidden="true"></span>
+        <span class="pin pin10" aria-hidden="true"></span>
 
-  <div id="msg" class="msg" aria-live="polite"></div>
+        <span class="pinLabel pinLabel0" aria-hidden="true">0</span>
+        <span class="pinLabel pinLabel10" aria-hidden="true">10</span>
 
-  <div id="results" class="results" style="display:none;">
-    <h3>Résultat</h3>
-    <div id="resBox"></div>
-    <div class="final" id="finalLine" style="display:none;"></div>
-    <p class="note2">Merci de communiquer ce score à votre praticien.</p>
-  </div>
+        <div class="anchorText left" id="leftAnchor"></div>
+        <div class="anchorText right" id="rightAnchor"></div>
+      </div>
 
-  <hr class="hr" />
+      <div class="hint">Astuce : 0 correspond à l’ancre de gauche, 10 à l’ancre de droite.</div>
+    </div>
+  </section>
 
-  <p class="attrib">
-    <strong>Score ACL-RSI (Total x 100) / 120 = ____ %</strong><br>
-    Aucune donnée n’est envoyée ni enregistrée (calcul local dans votre navigateur).
-  </p>
-</div>
+  <section class="nav" aria-label="Navigation">
+    <button id="prev" class="btn secondary" type="button">Précédent</button>
+    <button id="next" class="btn" type="button">Suivant</button>
+  </section>
+
+  <section id="done" class="done" style="display:none;" aria-label="Résultat">
+    <h2>Résultat</h2>
+
+    <div class="resultBox">
+      <div class="big"><span id="score">—</span> <span class="muted">/ 100</span></div>
+      <div class="small">Score ACL-RSI = (Total × 100) / 120</div>
+      <div class="small muted">Total : <span id="sum">—</span> / 120</div>
+    </div>
+
+    <div class="actions">
+      <button id="copy" class="btn" type="button">Copier mon score</button>
+      <button id="restart" class="btn secondary" type="button">Recommencer</button>
+    </div>
+
+    <div id="msg" class="msg" aria-live="polite"></div>
+  </section>
+
+  <footer class="foot">
+    <p class="muted">Aucune réponse n’est enregistrée ni transmise. Le score est calculé dans votre navigateur.</p>
+  </footer>
+</main>
 
 <style>
-  .wrap{max-width:980px;margin:0 auto;padding:12px 10px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .note{background:#f6f7f8;border-left:4px solid #d0d3d6;padding:10px 12px;border-radius:6px}
-  .meta{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
-  .field{flex:1 1 260px}
-  label{display:block;font-size:13px;margin:0 0 6px;color:#333}
-  input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #cfd3d7;background:#fff}
+  :root{
+    --bg:#f6f7fb;
+    --panel:#ffffff;
+    --panel2:#fbfbfd;
+    --text:#0f172a;
+    --muted:#475569;
+    --border:rgba(15,23,42,.10);
+    --shadow: 0 14px 34px rgba(15,23,42,.10);
+    --r:20px;
 
-  .form{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-  .item{border:1px solid #e6e7e9;border-radius:10px;padding:12px;background:#fff}
-  .item h4{margin:0 0 10px;font-size:16px}
+    --ink:#0f172a;
+    --blue:#2563eb;
+    --soft:#eef2f7;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1000px 700px at 10% -10%, rgba(59,130,246,.10) 0%, transparent 55%),
+      radial-gradient(1000px 700px at 100% 5%, rgba(16,185,129,.10) 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+  }
+  .page{max-width:760px;margin:0 auto;padding:14px 12px 22px}
+  .hero{
+    text-align:center;
+    padding:16px 14px;
+    border:1px solid var(--border);
+    border-radius: var(--r);
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    box-shadow: var(--shadow);
+  }
+  h1{margin:0;font-size:30px;letter-spacing:-.02em}
+  .sub{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.35}
 
-  .anchors{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#111;margin:6px 0 10px}
-  .anchors .left{max-width:45%}
-  .anchors .right{max-width:45%;text-align:right}
+  .note{
+    margin-top:12px;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius: var(--r);
+    background: rgba(255,255,255,.78);
+    box-shadow: var(--shadow);
+  }
+  .note p{margin:0;color:var(--muted);line-height:1.35;font-size:14px}
 
-  .scale{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .topbar{margin-top:12px}
+  .progressRow{display:flex;gap:12px;align-items:center}
+  .progressText{font-weight:950;color:var(--ink);min-width:68px;text-align:center}
+  .progress{
+    flex:1 1 auto;
+    height:10px;
+    border-radius:999px;
+    background: rgba(15,23,42,.10);
+    overflow:hidden;
+  }
+  .bar{height:100%;width:0%;background: var(--blue);}
+
+  .card{
+    margin-top:12px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius: var(--r);
+    background: rgba(255,255,255,.84);
+    box-shadow: var(--shadow);
+  }
+  .q{font-size:18px;font-weight:950;line-height:1.25;margin:0}
+  .scaleWrap{margin-top:12px}
+  .scale{
+    display:grid;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    gap: clamp(4px, 1.2vw, 8px);
+    align-items:stretch;
+  }
   .pill{position:relative}
   .pill input{position:absolute;opacity:0;pointer-events:none}
   .pill span{
-    display:inline-block;
-    min-width:36px;
-    text-align:center;
-    padding:8px 10px;
-    border:1px solid #cfd3d7;
+    display:flex;align-items:center;justify-content:center;
+    width:100%;
+    height: clamp(44px, 6vw, 52px);
     border-radius:999px;
+    border:1px solid rgba(15,23,42,.18);
     background:#fff;
-    cursor:pointer;
-    font-weight:700;
+    font-weight:950;
     user-select:none;
+    box-shadow: 0 8px 18px rgba(15,23,42,.08);
+    font-size: clamp(14px, 2.4vw, 16px);
   }
   .pill input:checked + span{
-    border-color:#111;
-    background:#111;
+    background: var(--ink);
     color:#fff;
+    border-color: var(--ink);
+    box-shadow: 0 14px 26px rgba(15,23,42,.18);
   }
 
-  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
-  button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;background:#111;color:#fff;font-weight:700}
-  button.secondary{background:#e6e7e9;color:#111}
-  button:disabled{opacity:.5;cursor:not-allowed}
+  /* Ancres : pins alignés sur le centre des colonnes 0 et 10 (toujours dans le cadre) */
+  .anchorRow{
+    position:relative;
+    margin-top:10px;
+    padding-top:26px; /* espace pour les pins */
+    min-height: 54px;
+  }
+  .pin{
+    position:absolute;
+    top:0;
+    width:10px;height:10px;border-radius:999px;
+    background: var(--ink);
+    transform: translateX(-50%);
+  }
+  .pin0{ left: calc((0.5/11)*100%); }
+  .pin10{ left: calc((10.5/11)*100%); }
 
-  .msg{margin-top:10px;font-size:14px}
-  .results{margin-top:16px;background:#f6f7f8;border:1px solid #e6e7e9;border-radius:12px;padding:12px}
-  .final{margin-top:12px;background:#fff;border:1px dashed #cfd3d7;border-radius:10px;padding:10px;font-weight:800}
-  .note2{margin-top:10px;font-weight:700}
-  .hr{margin:18px 0;border:none;border-top:1px solid #e6e7e9}
-  .attrib{font-size:12px;color:#555}
+  .pinLabel{
+    position:absolute;
+    top:12px;
+    padding:2px 8px;
+    border-radius:999px;
+    background: var(--ink);
+    color:#fff;
+    font-weight:950;
+    font-size:12px;
+    transform: translateX(-50%);
+  }
+  .pinLabel0{ left: calc((0.5/11)*100%); }
+  .pinLabel10{ left: calc((10.5/11)*100%); }
+
+  .anchorText{
+    position:absolute;
+    top:38px;
+    font-size:13px;
+    line-height:1.2;
+    font-weight:900;
+    color: var(--ink);
+    max-width: 58%;
+    white-space: normal;
+  }
+  /* texte aligné sur la position 0 (débute à l’aplomb de 0) */
+  .anchorText.left{
+    left: calc((0.5/11)*100%);
+    text-align:left;
+  }
+  /* texte aligné sur la position 10 (se termine à l’aplomb de 10) */
+  .anchorText.right{
+    left: calc((10.5/11)*100%);
+    transform: translateX(-100%);
+    text-align:right;
+  }
+
+  .hint{margin-top:10px;color:var(--muted);font-size:12px}
+
+  .nav{display:flex;gap:10px;margin-top:12px}
+  .btn{
+    flex:1 1 auto;
+    border:0;cursor:pointer;
+    padding:12px 14px;border-radius:16px;
+    background: var(--ink);color:#fff;font-weight:950;font-size:16px;
+  }
+  .btn.secondary{background:#e5e7eb;color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  .done{
+    margin-top:14px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius: var(--r);
+    background: rgba(255,255,255,.84);
+    box-shadow: var(--shadow);
+  }
+  .done h2{margin:0 0 10px;font-size:18px}
+  .resultBox{
+    border:1px solid rgba(15,23,42,.12);
+    border-radius:18px;
+    background:#fff;
+    padding:14px;
+  }
+  .big{font-size:34px;font-weight:1000}
+  .small{margin-top:6px;font-size:13px;color:var(--muted)}
+  .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .actions .btn{flex:1 1 220px}
+  .msg{margin-top:10px;color:var(--muted);font-size:13px}
+  .foot{margin-top:14px;text-align:center}
+  .muted{color:var(--muted)}
+
+  @media (min-width: 900px){
+    .page{max-width:920px}
+    h1{font-size:34px}
+    .q{font-size:20px}
+    .anchorText{font-size:14px}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{scroll-behavior:auto}
+  }
 </style>
 
 <script>
-(function(){
-  // Questions + ancres : reprises telles que dans votre document.
+(() => {
   const ITEMS = [
     { q: "Pensez-vous pouvoir pratiquer votre sport au même niveau qu’auparavant ?", left: "Pas du tout sûr", right: "Totalement sûr" },
     { q: "Pensez-vous que vous pourriez vous blesser de nouveau le genou si vous repreniez le sport ?", left: "Extrêmement probable", right: "Pas du tout probable" },
@@ -124,74 +291,117 @@
     { q: "Vous sentez-vous détendu à l’idée de pratiquer votre sport ?", left: "Pas du tout détendu", right: "Totalement détendu" }
   ];
 
-  const form = document.getElementById("form");
+  const total = ITEMS.length;
+  document.getElementById("total").textContent = String(total);
 
-  function makeScale(name){
-    const scale = document.createElement("div");
-    scale.className = "scale";
-    for(let i=0;i<=10;i++){
-      const lab = document.createElement("label");
-      lab.className = "pill";
-      lab.innerHTML = `<input type="radio" name="${name}" value="${i}"><span>${i}</span>`;
-      scale.appendChild(lab);
-    }
-    return scale;
-  }
+  let idx = 0;
+  const answers = Array(total).fill(null);
 
-  ITEMS.forEach((it, idx)=>{
-    const block = document.createElement("div");
-    block.className = "item";
-    block.innerHTML = `<h4>${idx+1}. ${it.q}</h4>
-      <div class="anchors">
-        <div class="left"><strong>${it.left}</strong></div>
-        <div class="right"><strong>${it.right}</strong></div>
-      </div>`;
-    block.appendChild(makeScale(`i_${idx}`));
-    form.appendChild(block);
-  });
+  const qText = document.getElementById("qText");
+  const scale = document.getElementById("scale");
+  const leftAnchor = document.getElementById("leftAnchor");
+  const rightAnchor = document.getElementById("rightAnchor");
 
-  function round1(x){ return Math.round(x*10)/10; }
+  const posEl = document.getElementById("pos");
+  const bar = document.getElementById("bar");
+  const prevBtn = document.getElementById("prev");
+  const nextBtn = document.getElementById("next");
+
+  const done = document.getElementById("done");
+  const scoreEl = document.getElementById("score");
+  const sumEl = document.getElementById("sum");
+  const msgEl = document.getElementById("msg");
+
   function fmt1(x){
     const s = (Math.round(x*10)/10).toFixed(1);
     return s.replace(".", ",");
   }
 
-  function getValue(name){
-    const el = document.querySelector(`input[name="${name}"]:checked`);
-    return el ? parseInt(el.value,10) : null;
+  function renderScale(selected){
+    scale.innerHTML = "";
+    for(let v=0; v<=10; v++) {
+      const lab = document.createElement("label");
+      lab.className = "pill";
+      lab.innerHTML = `<input type="radio" name="score" value="${v}" ${selected===v ? "checked" : ""} aria-label="Score ${v}"><span>${v}</span>`;
+      lab.querySelector("input").addEventListener("change", (e) => {
+        answers[idx] = parseInt(e.target.value, 10);
+        // feedback : active next if needed
+      });
+      scale.appendChild(lab);
+    }
+  }
+
+  function setProgress(){
+    posEl.textContent = String(idx+1);
+    const pct = ((idx+1)/total)*100;
+    bar.style.width = pct.toFixed(2) + "%";
+    prevBtn.disabled = (idx === 0);
+    nextBtn.textContent = (idx === total-1) ? "Résultat" : "Suivant";
+  }
+
+  function renderQuestion(){
+    done.style.display = "none";
+    msgEl.textContent = "";
+    const it = ITEMS[idx];
+    qText.textContent = `${idx+1}. ${it.q}`;
+    leftAnchor.textContent = it.left;
+    rightAnchor.textContent = it.right;
+    renderScale(answers[idx]);
+    setProgress();
+
+    // Ajuste la hauteur de la zone d’ancres pour éviter tout chevauchement (texte toujours dans le cadre)
+    requestAnimationFrame(() => {
+      const row = document.getElementById("anchorRow");
+      const lh = leftAnchor.offsetHeight || 0;
+      const rh = rightAnchor.offsetHeight || 0;
+      const baseTop = 38; // top des textes dans .anchorText
+      const padding = 10;
+      row.style.height = (baseTop + Math.max(lh, rh) + padding) + "px";
+    });
+
+    // scroll to top for mobile comfort
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function compute(){
     let sum = 0;
-    let missing = 0;
-
-    for(let i=0;i<ITEMS.length;i++){
-      const v = getValue(`i_${i}`);
-      if(v === null){ missing++; continue; }
-      sum += v;
-    }
-    const score100 = (missing===0) ? round1((sum * 100) / 120) : null; // formule du document
-    return {sum, score100, missing};
+    for(const v of answers) sum += v;
+    const score = (sum * 100) / 120;
+    return {sum, score};
   }
 
-  function render(res){
-    if(res.missing>0){
-      return `<p><strong>Il manque ${res.missing} réponse(s).</strong> Merci de compléter toutes les questions.</p>`;
+  function showDone(){
+    const missing = answers.map((v,i)=>v===null ? i+1 : null).filter(Boolean);
+    if(missing.length){
+      msgEl.textContent = `Il manque ${missing.length} réponse(s). Exemple : question(s) ${missing.slice(0,4).join(", ")}${missing.length>4 ? "…" : ""}.`;
+      return;
     }
-    return `
-      <p><strong>Total :</strong> ${res.sum} / 120</p>
-      <p><strong>Score ACL-RSI :</strong> ${fmt1(res.score100)} / 100</p>
-      <p style="font-size:12px;color:#555">Calcul : Score ACL-RSI (Total x 100) / 120.</p>
-    `;
+    const r = compute();
+    sumEl.textContent = String(r.sum);
+    scoreEl.textContent = fmt1(r.score);
+    done.style.display = "block";
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }
 
-  const msg = document.getElementById("msg");
-  const results = document.getElementById("results");
-  const resBox = document.getElementById("resBox");
-  const copyBtn = document.getElementById("copy");
-  const finalLine = document.getElementById("finalLine");
+  prevBtn.addEventListener("click", () => {
+    if(idx>0) idx--;
+    renderQuestion();
+  });
 
-  let lastSummary = "";
+  nextBtn.addEventListener("click", () => {
+    // enforce answer to proceed
+    if(answers[idx] === null){
+      msgEl.textContent = "Merci de choisir une valeur entre 0 et 10 pour continuer.";
+      return;
+    }
+    msgEl.textContent = "";
+    if(idx < total-1){
+      idx++;
+      renderQuestion();
+    } else {
+      showDone();
+    }
+  });
 
   async function copyText(text){
     try{
@@ -207,56 +417,28 @@
     return false;
   }
 
-  document.getElementById("calc").addEventListener("click", ()=>{
-    msg.textContent = "";
-    copyBtn.disabled = true;
-    finalLine.style.display = "none";
-    finalLine.textContent = "";
-    lastSummary = "";
-
-    const R = compute();
-    resBox.innerHTML = render(R);
-    results.style.display = "block";
-
-    if(R.missing>0){
-      msg.textContent = "Certaines réponses sont manquantes. Merci de tout compléter.";
+  document.getElementById("copy").addEventListener("click", async ()=>{
+    msgEl.textContent = "";
+    const missing = answers.some(v => v === null);
+    if(missing){
+      msgEl.textContent = "Impossible de copier : le questionnaire n’est pas complet.";
       return;
     }
-
-    const knee = document.getElementById("knee").value;
-    const sport = document.getElementById("sport").value.trim();
-
-    const kneeTxt = knee ? ` — genou ${knee}` : "";
-    const sportTxt = sport ? ` — sport: ${sport}` : "";
-    lastSummary = `ACL-RSI${kneeTxt}${sportTxt} — score ${fmt1(R.score100)}/100 (total ${R.sum}/120)`;
-
-    finalLine.textContent = lastSummary;
-    finalLine.style.display = "block";
-    copyBtn.disabled = false;
+    const r = compute();
+    const summary = `ACL-RSI — score ${fmt1(r.score)}/100 (total ${r.sum}/120)`;
+    const ok = await copyText(summary);
+    msgEl.textContent = ok ? "Score copié." : "Impossible de copier automatiquement.";
   });
 
-  copyBtn.addEventListener("click", async ()=>{
-    if(!lastSummary) return;
-    const ok = await copyText(lastSummary);
-    msg.textContent = ok ? "Score copié." : "Impossible de copier automatiquement.";
+  document.getElementById("restart").addEventListener("click", ()=>{
+    for(let i=0;i<answers.length;i++) answers[i]=null;
+    idx = 0;
+    renderQuestion();
   });
 
-  document.getElementById("reset").addEventListener("click", ()=>{
-    for(let i=0;i<ITEMS.length;i++){
-      const checked = document.querySelector(`input[name="i_${i}"]:checked`);
-      if(checked) checked.checked = false;
-    }
-    document.getElementById("knee").value="";
-    document.getElementById("sport").value="";
-    msg.textContent="";
-    results.style.display="none";
-    copyBtn.disabled = true;
-    finalLine.style.display = "none";
-    finalLine.textContent = "";
-    lastSummary = "";
-  });
+  renderQuestion();
 })();
 </script>
-
 </body>
 </html>
+
