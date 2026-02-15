@@ -25,6 +25,12 @@
         <div class="meta">Score automatique • 0 donnée envoyée</div>
       </a>
 
+      <a class="card" href="./alr-rsi/">
+        <div class="title">ALR RSI</div>
+        <div class="sub">Retour au sport — cheville</div>
+        <div class="meta">Score /100 • 0 donnée envoyée</div>
+      </a>
+
       <a class="card" href="./cait/">
         <div class="title">CAIT</div>
         <div class="sub">Instabilité cheville — gauche + droite</div>
@@ -97,41 +103,3 @@
     box-shadow: var(--shadow);
     transform: translateY(0);
     transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease;
-  }
-  .card:active{transform: translateY(1px)}
-  .card:hover{
-    border-color: rgba(17,24,39,.18);
-    box-shadow: 0 12px 28px rgba(17,24,39,.10);
-  }
-
-  .title{font-size:20px;font-weight:800;margin-bottom:4px}
-  .sub{font-size:14px;margin-bottom:6px;color:var(--text);opacity:.92}
-  .meta{color:var(--muted);font-size:12px}
-
-  .privacy{
-    margin-top:14px;
-    padding:14px;
-    border-radius: var(--radius);
-    border:1px solid var(--border);
-    background: rgba(255,255,255,.70);
-    backdrop-filter: blur(6px);
-  }
-  .privacy h2{margin:0 0 6px;font-size:14px;letter-spacing:.2px}
-  .privacy p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
-
-  .foot{margin-top:14px;text-align:center}
-  .small{color:var(--muted);font-size:12px}
-
-  @media (min-width: 720px){
-    .grid{grid-template-columns: 1fr 1fr;}
-    h1{font-size:32px}
-  }
-
-  .card:focus{
-    outline: 3px solid rgba(59,130,246,.35);
-    outline-offset: 2px;
-  }
-</style>
-
-</body>
-</html>
