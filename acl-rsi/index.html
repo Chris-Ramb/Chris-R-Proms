@@ -60,7 +60,7 @@
     <h2>Résultat</h2>
 
     <div class="resultBox">
-      <div class="big"><span id="score">—</span> <span class="muted">/ 100</span></div>
+      <div class="big"><strong><span id="score">—</span>%</strong></div>
       <div class="small">Score ACL-RSI = (Total × 100) / 120</div>
       <div class="small muted">Total : <span id="sum">—</span> / 120</div>
     </div>
@@ -425,7 +425,7 @@
       return;
     }
     const r = compute();
-    const summary = `ACL-RSI — score ${fmt1(r.score)}/100 (total ${r.sum}/120)`;
+    const summary = `ACL-RSI — score ${fmt1(r.score)}% (total ${r.sum}/120)`;
     const ok = await copyText(summary);
     msgEl.textContent = ok ? "Score copié." : "Impossible de copier automatiquement.";
   });
@@ -441,4 +441,3 @@
 </script>
 </body>
 </html>
-
